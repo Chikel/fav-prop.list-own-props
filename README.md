@@ -50,7 +50,7 @@ listOwnProps({ a: 1, b: true, c: 'C' }); // => ['a', 'b', 'c' ]
 
 List own enumerable and unenumerable properties of the given object.
 
-This function returns the same result of `Object.getOwnPropertyNames`.
+This function returns the same result of `Object.getOwnPropertyNames` except when the argument is not an object. When the argument is a string, this function returns an array which having only an element: `length`, and otherwise this function returns an empty array.
 
 
 #### Parameter:
@@ -67,7 +67,6 @@ An array of property names.
 
 
 ## Checked                                                                      
-
 ### Node.js (4〜8)
 
 | Platform  |   4    |   5    |   6    |   7    |   8    |
