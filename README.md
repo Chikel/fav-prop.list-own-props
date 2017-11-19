@@ -52,6 +52,7 @@ List own enumerable and unenumerable properties of the given object.
 
 This function returns the same result of `Object.getOwnPropertyNames` except when the argument is not an object. When the argument is a string, this function returns an array which having only an element: `length`, and otherwise this function returns an empty array.
 
+***NOTE:*** *The behavior of `Object.getOwnPropertyNames` is different between before and after of Node.js (io.js) v3 when the argument is a function (about containing 'arguments' and 'caller', or not).*
 
 #### Parameter:
 

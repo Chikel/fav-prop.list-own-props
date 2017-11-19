@@ -19,6 +19,7 @@ describe('fav.prop.listOwnProps', function() {
     function Fn0() {}
     Fn0.prototype.a = 1;
     expect(listOwnProps(new Fn0())).to.deep.equal([]);
+
     function Fn1() {
       this.b = true;
       this.c = 'C';
@@ -52,18 +53,52 @@ describe('fav.prop.listOwnProps', function() {
     expect(listOwnProps(123)).to.deep.equal([]);
   });
 
-  it('Should return an array having only `length` when the argument is a ' +
-  'string', function() {
+  it('Should return an array having index strings and `length` when the ' +
+  '\n\targument is a string', function() {
     expect(listOwnProps('')).to.deep.equal(['length']);
-    expect(listOwnProps('abc')).to.deep.equal(['length']);
+    expect(listOwnProps('abc').sort()).to.deep
+      .equal(['0', '1', '2', 'length']);
 
     var s = 'abc';
     try {
       s.aaa = 'AAA';
     } catch (e) {
       // Throws TypeError on Node.js v0.11 or later.
+      //console.log(e);
     }
-    expect(listOwnProps(s)).to.deep.equal(['length']);
+    expect(listOwnProps(s).sort()).to.deep.equal(['0', '1', '2', 'length']);
+
+    try {
+      Object.defineProperty(s, 'bbb', { value: 'BBB' });
+    } catch (e) {
+      //console.log(e);
+    }
+    expect(listOwnProps(s).sort()).to.deep.equal(['0', '1', '2', 'length']);
+  });
+
+  it('Should return an array having only `length` when the argument is a ' +
+  'string', function() {
+    expect(listOwnProps(new String(''))).to.deep.equal(['length']);
+    expect(listOwnProps(new String('abc')).sort()).to.deep
+      .equal(['0', '1', '2', 'length']);
+
+    var s = new String('abc');
+    try {
+      s.aaa = 'AAA';
+    } catch (e) {
+      // Throws TypeError on Node.js v0.11 or later.
+      //console.log(e);
+    }
+    expect(listOwnProps(s).sort()).to.deep
+      .equal(['0', '1', '2', 'aaa', 'length']);
+
+    try {
+      Object.defineProperty(s, 'bbb', { value: 'BBB' });
+    } catch (e) {
+      //console.log(e);
+    }
+    expect(listOwnProps(s).sort()).to.deep
+      .equal(['0', '1', '2', 'aaa', 'bbb', 'length']);
   });
 
   it('Should return an array of index strings and `length` when the argument' +
@@ -75,5 +110,53 @@ describe('fav.prop.listOwnProps', function() {
     var a = ['a', 'b'];
     a.aaa = 'AAA';
     expect(listOwnProps(a).sort()).to.deep.equal(['0', '1', 'aaa', 'length']);
+
+    try {
+      Object.defineProperty(a, 'bbb', { value: 'BBB' });
+    } catch (e) {
+      //console.log(e);
+    }
+    expect(listOwnProps(a).sort()).to.deep
+      .equal(['0', '1', 'aaa', 'bbb', 'length']);
+  });
+
+  it('Should return appended properties when the argument is a function',
+  function() {
+    var fn = function() {};
+    expect(listOwnProps(fn).sort()).to.deep
+      .equal(['length', 'name', 'prototype']);
+
+    fn.aaa = 'AAA';
+    expect(listOwnProps(fn).sort()).to.deep
+      .equal(['aaa', 'length', 'name', 'prototype']);
+
+    Object.defineProperty(fn, 'bbb', { value: 'BBB' });
+    expect(listOwnProps(fn).sort()).to.deep
+      .equal(['aaa', 'bbb', 'length', 'name', 'prototype']);
+  });
+
+  it('Should return an empty string when the argument is a symbol',
+  function() {
+    if (typeof Symbol !== 'function') {
+      this.skip();
+      return;
+    }
+
+    var symbol = Symbol('foo');
+    expect(listOwnProps(symbol)).to.deep.equal([]);
+
+    try {
+      symbol.aaa = 'AAA';
+    } catch (e) {
+      // console.error(e);
+    }
+    expect(listOwnProps(symbol)).to.deep.equal([]);
+
+    try {
+      Object.defineProperty(symbol, 'bbb', { value: 'BBB' });
+    } catch (e) {
+      // console.error(e);
+    }
+    expect(listOwnProps(symbol)).to.deep.equal([]);
   });
 });
