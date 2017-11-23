@@ -1,6 +1,6 @@
 # [@fav/prop.list-own-props][repo-url] [![NPM][npm-img]][npm-url] [![MIT License][mit-img]][mit-url] [![Build Status][travis-img]][travis-url] [![Build Status][appveyor-img]][appveyor-url] [![Coverage status][coverage-img]][coverage-url]
 
-Lists own enumerable and unenumerable properties of an object.
+Lists enumerable and unenumerable own properties of an object.
 
 > "fav" is an abbreviation of "favorite" and also the acronym of "for all versions".
 > This package is intended to support all Node.js versions and many browsers as possible.
@@ -50,15 +50,15 @@ listOwnProps({ a: 1, b: true, c: 'C' }); // => ['a', 'b', 'c' ]
 
 List own enumerable and unenumerable properties of the given object.
 
-This function returns the same result of `Object.getOwnPropertyNames` except when the argument is not an object. When the argument is a string, this function returns an array which having only an element: `length`, and otherwise this function returns an empty array.
+This function returns the same result of `Object.getOwnPropertyNames` except when the argument is not an object, a function. When the argument is a string, this function returns an array which having only an element: `length`, and otherwise this function returns an empty array.
 
-***NOTE:*** *The behavior of `Object.getOwnPropertyNames` is different between before and after of Node.js (io.js) v3 when the argument is a function (about containing 'arguments' and 'caller', or not).*
+***NOTE:*** *The behavior of `Object.getOwnPropertyNames` is different between before and after of Node.js (io.js) v3 when the argument is a function (about containing `arguments` and `caller`, or not). This function excludes these properties for same behaviors of all versions of Node.js.*
 
 #### Parameter:
 
-| Parameter |  Type  | Description                           |
-|-----------|:------:|---------------------------------------|
-| *obj*     | object | The object to be list its properties. |
+| Parameter |  Type  | Description                             |
+|-----------|:------:|-----------------------------------------|
+| *obj*     | object | The object to be listed its properties. |
 
 #### Return:
 
