@@ -2,7 +2,6 @@
 
 var chai = require('chai');
 var expect = chai.expect;
-
 var fav = {}; fav.prop = {}; fav.prop.listOwnProps = require('..');
 
 var listOwnProps = fav.prop.listOwnProps;
@@ -10,15 +9,18 @@ var listOwnProps = fav.prop.listOwnProps;
 describe('fav.prop.listOwnProps', function() {
 
   it('Should get all props when the argument is a plain object', function() {
-    expect(listOwnProps({})).to.deep.equal([]);
-    expect(listOwnProps({ a: 1, b: true, c: 'C' }).sort()).to.deep
-      .equal(['a', 'b', 'c']);
+    expect(listOwnProps({})).to.have.deep.members([]);
+    expect(listOwnProps({ a: 1, b: true, c: 'C' })).to.have.deep.members([
+      { key: 'a', value: 1 },
+      { key: 'b', value: true },
+      { key: 'c', value: 'C' }
+    ]);
   });
 
-  it('Should not get properties of prototype', function() {
+  it('Should not get props of prototype', function() {
     function Fn0() {}
     Fn0.prototype.a = 1;
-    expect(listOwnProps(new Fn0())).to.deep.equal([]);
+    expect(listOwnProps(new Fn0())).to.have.deep.members([]);
 
     function Fn1() {
       this.b = true;
@@ -27,7 +29,10 @@ describe('fav.prop.listOwnProps', function() {
     Fn1.prototype = new Fn0();
     Fn1.prototype.d = 'D';
     Object.defineProperty(Fn1.prototype, 'e', { value: 'E' });
-    expect(listOwnProps(new Fn1()).sort()).to.deep.equal(['b', 'c']);
+    expect(listOwnProps(new Fn1())).to.have.deep.members([
+      { key: 'b', value: true },
+      { key: 'c', value: 'C' },
+    ]);
   });
 
   it('Should get also unenumerable props', function() {
@@ -37,27 +42,37 @@ describe('fav.prop.listOwnProps', function() {
       b: { value: true },
       c: { value: 'C' },
     });
-    expect(listOwnProps(obj).sort()).to.deep.equal(['a', 'b', 'c']);
+    expect(listOwnProps(obj)).to.have.deep.members([
+      { key: 'a', value: 1 },
+      { key: 'b', value: true },
+      { key: 'c', value: 'C' },
+    ]);
   });
 
   it('Should return an empty array when the argument is nullish', function() {
-    expect(listOwnProps(undefined)).to.deep.equal([]);
-    expect(listOwnProps(null)).to.deep.equal([]);
+    expect(listOwnProps(undefined)).to.have.deep.members([]);
+    expect(listOwnProps(null)).to.have.deep.members([]);
   });
 
   it('Should return an empty array when the argument is primitive type',
   function() {
-    expect(listOwnProps(true)).to.deep.equal([]);
-    expect(listOwnProps(false)).to.deep.equal([]);
-    expect(listOwnProps(0)).to.deep.equal([]);
-    expect(listOwnProps(123)).to.deep.equal([]);
+    expect(listOwnProps(true)).to.have.deep.members([]);
+    expect(listOwnProps(false)).to.have.deep.members([]);
+    expect(listOwnProps(0)).to.have.deep.members([]);
+    expect(listOwnProps(123)).to.have.deep.members([]);
   });
 
   it('Should return an array having index strings and `length` when the ' +
   '\n\targument is a string', function() {
-    expect(listOwnProps('')).to.deep.equal(['length']);
-    expect(listOwnProps('abc').sort()).to.deep
-      .equal(['0', '1', '2', 'length']);
+    expect(listOwnProps('')).to.have.deep.members([
+      { key: 'length', value: 0 },
+    ]);
+    expect(listOwnProps('abc')).to.have.deep.members([
+      { key: '0', value: 'a' },
+      { key: '1', value: 'b' },
+      { key: '2', value: 'c' },
+      { key: 'length', value: 3 },
+    ]);
 
     var s = 'abc';
     try {
@@ -66,21 +81,36 @@ describe('fav.prop.listOwnProps', function() {
       // Throws TypeError on Node.js v0.11 or later.
       //console.log(e);
     }
-    expect(listOwnProps(s).sort()).to.deep.equal(['0', '1', '2', 'length']);
+    expect(listOwnProps(s)).to.have.deep.members([
+      { key: '0', value: 'a' },
+      { key: '1', value: 'b' },
+      { key: '2', value: 'c' },
+      { key: 'length', value: 3 },
+    ]);
 
     try {
       Object.defineProperty(s, 'bbb', { value: 'BBB' });
     } catch (e) {
       //console.log(e);
     }
-    expect(listOwnProps(s).sort()).to.deep.equal(['0', '1', '2', 'length']);
+    expect(listOwnProps(s)).to.have.deep.members([
+      { key: '0', value: 'a' },
+      { key: '1', value: 'b' },
+      { key: '2', value: 'c' },
+      { key: 'length', value: 3 },
+    ]);
   });
 
-  it('Should return an array having only `length` when the argument is a ' +
-  'string', function() {
-    expect(listOwnProps(new String(''))).to.deep.equal(['length']);
-    expect(listOwnProps(new String('abc')).sort()).to.deep
-      .equal(['0', '1', '2', 'length']);
+  it('Should return appended props when the argument is a atring', function() {
+    expect(listOwnProps(new String(''))).to.have.deep.members([
+      { key: 'length', value: 0 },
+    ]);
+    expect(listOwnProps(new String('abc'))).to.have.deep.members([
+      { key: '0', value: 'a' },
+      { key: '1', value: 'b' },
+      { key: '2', value: 'c' },
+      { key: 'length', value: 3 },
+    ]);
 
     var s = new String('abc');
     try {
@@ -89,50 +119,89 @@ describe('fav.prop.listOwnProps', function() {
       // Throws TypeError on Node.js v0.11 or later.
       //console.log(e);
     }
-    expect(listOwnProps(s).sort()).to.deep
-      .equal(['0', '1', '2', 'aaa', 'length']);
+    expect(listOwnProps(s)).to.have.deep.members([
+      { key: '0', value: 'a' },
+      { key: '1', value: 'b' },
+      { key: '2', value: 'c' },
+      { key: 'aaa', value: 'AAA' },
+      { key: 'length', value: 3 },
+    ]);
 
     try {
       Object.defineProperty(s, 'bbb', { value: 'BBB' });
     } catch (e) {
       //console.log(e);
     }
-    expect(listOwnProps(s).sort()).to.deep
-      .equal(['0', '1', '2', 'aaa', 'bbb', 'length']);
+    expect(listOwnProps(s)).to.have.deep.members([
+      { key: '0', value: 'a' },
+      { key: '1', value: 'b' },
+      { key: '2', value: 'c' },
+      { key: 'aaa', value: 'AAA' },
+      { key: 'bbb', value: 'BBB' },
+      { key: 'length', value: 3 },
+    ]);
   });
 
-  it('Should return an array of index strings and `length` when the argument' +
-  '\n\tis an array', function() {
-    expect(listOwnProps([])).to.deep.equal(['length']);
-    expect(listOwnProps([1, 2, 3]).sort()).to.deep
-      .equal(['0', '1', '2', 'length']);
+  it('Should return props of an array of index strings and `length` when ' +
+  '\n\tthe argument is an array', function() {
+    expect(listOwnProps([])).to.have.deep.members([
+      { key: 'length', value: 0 },
+    ]);
+    expect(listOwnProps([1, 2, 3])).to.have.deep.members([
+      { key: '0', value: 1 },
+      { key: '1', value: 2 },
+      { key: '2', value: 3 },
+      { key: 'length', value: 3 },
+    ]);
 
     var a = ['a', 'b'];
     a.aaa = 'AAA';
-    expect(listOwnProps(a).sort()).to.deep.equal(['0', '1', 'aaa', 'length']);
+    expect(listOwnProps(a)).to.have.deep.members([
+      { key: '0', value: 'a' },
+      { key: '1', value: 'b' },
+      { key: 'aaa', value: 'AAA' },
+      { key: 'length', value: 2 },
+    ]);
 
     try {
       Object.defineProperty(a, 'bbb', { value: 'BBB' });
     } catch (e) {
       //console.log(e);
     }
-    expect(listOwnProps(a).sort()).to.deep
-      .equal(['0', '1', 'aaa', 'bbb', 'length']);
+    expect(listOwnProps(a)).to.have.deep.members([
+      { key: '0', value: 'a' },
+      { key: '1', value: 'b' },
+      { key: 'aaa', value: 'AAA' },
+      { key: 'bbb', value: 'BBB' },
+      { key: 'length', value: 2 },
+    ]);
   });
 
-  it('Should return appended properties when the argument is a function',
-  function() {
-    var fn = function() {};
-    expect(listOwnProps(fn).sort()).to.deep
-      .equal(['length', 'name', 'prototype']);
+  it('Should return `length`, `name`, `prototype` props and appended props ' +
+  '\n\twhen the argument is a function', function() {
+    var fn = function f() {};
+    expect(listOwnProps(fn)).to.have.deep.members([
+      { key: 'length', value: 0 },
+      { key: 'name', value: 'f' },
+      { key: 'prototype', value: fn.prototype },
+    ]);
 
     fn.aaa = 'AAA';
-    expect(listOwnProps(fn).sort()).to.deep
-      .equal(['aaa', 'length', 'name', 'prototype']);
+    expect(listOwnProps(fn)).to.have.deep.members([
+      { key: 'length', value: 0 },
+      { key: 'name', value: 'f' },
+      { key: 'prototype', value: fn.prototype },
+      { key: 'aaa', value: 'AAA' },
+    ]);
 
     Object.defineProperty(fn, 'bbb', { value: 'BBB' });
-    expect(listOwnProps(fn).sort()).to.deep
-      .equal(['aaa', 'bbb', 'length', 'name', 'prototype']);
+    expect(listOwnProps(fn)).to.have.deep.members([
+      { key: 'length', value: 0 },
+      { key: 'name', value: 'f' },
+      { key: 'prototype', value: fn.prototype },
+      { key: 'aaa', value: 'AAA' },
+      { key: 'bbb', value: 'BBB' },
+    ]);
   });
 
   it('Should return an empty string when the argument is a symbol',
@@ -143,20 +212,20 @@ describe('fav.prop.listOwnProps', function() {
     }
 
     var symbol = Symbol('foo');
-    expect(listOwnProps(symbol)).to.deep.equal([]);
+    expect(listOwnProps(symbol)).to.have.deep.members([]);
 
     try {
       symbol.aaa = 'AAA';
     } catch (e) {
       // console.error(e);
     }
-    expect(listOwnProps(symbol)).to.deep.equal([]);
+    expect(listOwnProps(symbol)).to.have.deep.members([]);
 
     try {
       Object.defineProperty(symbol, 'bbb', { value: 'BBB' });
     } catch (e) {
       // console.error(e);
     }
-    expect(listOwnProps(symbol)).to.deep.equal([]);
+    expect(listOwnProps(symbol)).to.have.deep.members([]);
   });
 });

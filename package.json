@@ -40,7 +40,11 @@
     "url": "https://github.com/sttk/fav-prop.list-own-props/issues"
   },
   "homepage": "https://github.com/sttk/fav-prop.list-own-props#readme",
+  "dependencies": {
+    "@fav/prop.list-own-keys": "^0.1.0"
+  },
   "devDependencies": {
+    "@xslet/platform": "^0.1.5",
     "browserify": "^14.5.0",
     "chai": "^3.5.0",
     "coveralls": "^3.0.0",
