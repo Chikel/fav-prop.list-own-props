@@ -65,15 +65,24 @@ function listOwnKeys(obj) {
     }
     case 'function': {
       var arr = Object.getOwnPropertyNames(obj);
+      var hasName = false;
       for (var i = arr.length - 1; i >= 0; i--) {
         var key = arr[i];
-        /* istanbul ignore if */
-        if (key === 'caller' || key === 'arguments') {
-          arr.splice(i, 1);
+        /* istanbul ignore next */
+        switch (key) {
+          case 'caller':
+          case 'arguments': {
+            arr.splice(i, 1);
+            break;
+          }
+          case 'name': {
+            hasName = true;
+            break;
+          }
         }
       }
       /* istanbul ignore if */
-      if (!('name' in obj)) { // A function don't have `name` prop on IE
+      if (!hasName) { // A function don't have `name` prop on IE
         arr.push('name');
       }
       return arr;

@@ -1,6 +1,6 @@
 {
   "name": "@fav/prop.list-own-props",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "Lists own enumerable and unenumerable properties of an object.",
   "main": "index.js",
   "files": [
@@ -41,7 +41,7 @@
   },
   "homepage": "https://github.com/sttk/fav-prop.list-own-props#readme",
   "dependencies": {
-    "@fav/prop.list-own-keys": "^0.1.0"
+    "@fav/prop.list-own-keys": "^0.1.1"
   },
   "devDependencies": {
     "@xslet/platform": "^0.1.5",
