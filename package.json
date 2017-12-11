@@ -27,7 +27,9 @@
   },
   "keywords": [
     "list",
+    "property",
     "keys",
+    "symbols",
     "own",
     "unenumerable",
     "prop",
@@ -41,7 +43,8 @@
   },
   "homepage": "https://github.com/sttk/fav-prop.list-own-props#readme",
   "dependencies": {
-    "@fav/prop.list-own-keys": "^0.1.1"
+    "@fav/prop.list-own-keys": "^0.1.1",
+    "@fav/prop.list-own-symbols": "^0.1.0"
   },
   "devDependencies": {
     "@xslet/platform": "^0.1.5",

@@ -2,56 +2,15 @@
 'use strict';
 
 var listOwnKeys = require('@fav/prop.list-own-keys');
+var listOwnSymbols = require('@fav/prop.list-own-symbols');
 
 function listOwnProps(obj) {
-  /* istanbul ignore if */
-  if (typeof obj === 'function' && obj.name == null) { // for IE, Edge
-    var arr = Object.getOwnPropertyNames(obj);
-    var hasName = false;
-    for (var i = arr.length - 1; i >= 0; i--) {
-      var key = arr[i];
-      switch (key) {
-        case 'caller':
-        case 'arguments': {
-          arr.splice(i, 1);
-          continue;
-        }
-        case 'name': {
-          hasName = true;
-          break;
-        }
-      }
-      arr[i] = { key: key, value: obj[key] };
-    }
-    // A function don't have `name` prop on IE
-    // A no-name function don't have `name` prop on Edge
-    if (!hasName) {
-      arr.push({ key: 'name', value: getFunctionName(obj) });
-    }
-    return arr;
-  }
-
-  var arr = listOwnKeys(obj);
-  for (var i = 0, n = arr.length; i < n; i++) {
-    var key = arr[i];
-    var val = obj[key];
-    arr[i] = { key: key, value: val };
-  }
-  return arr;
-}
-
-/* istanbul ignore next */
-function getFunctionName(fn) {
-  var result = /^function\s+([^\s\*]+)\s*\(.*$/.exec(fn.toString());
-  if (!result) {
-    return undefined;
-  }
-  return result[1];
+  return listOwnKeys(obj).concat(listOwnSymbols(obj));
 }
 
 module.exports = listOwnProps;
 
-},{"@fav/prop.list-own-keys":2}],2:[function(require,module,exports){
+},{"@fav/prop.list-own-keys":2,"@fav/prop.list-own-symbols":3}],2:[function(require,module,exports){
 'use strict';
 
 function listOwnKeys(obj) {
@@ -94,6 +53,33 @@ function listOwnKeys(obj) {
 }
 
 module.exports = listOwnKeys;
+
+},{}],3:[function(require,module,exports){
+'use strict';
+
+function listOwnSymbols(obj) {
+  /* istanbul ignore if */
+  if (typeof Symbol !== 'function') {
+    return [];
+  }
+
+  switch (typeof obj) {
+    case 'object': {
+      obj = obj || [];
+      break;
+    }
+    case 'function': {
+      break;
+    }
+    default: {
+      return [];
+    }
+  }
+
+  return Object.getOwnPropertySymbols(obj);
+}
+
+module.exports = listOwnSymbols;
 
 },{}]},{},[1])(1)
 });

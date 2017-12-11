@@ -1,6 +1,6 @@
 # [@fav/prop.list-own-props][repo-url] [![NPM][npm-img]][npm-url] [![MIT License][mit-img]][mit-url] [![Build Status][travis-img]][travis-url] [![Build Status][appveyor-img]][appveyor-url] [![Coverage status][coverage-img]][coverage-url]
 
-Lists enumerable and unenumerable own property content objects of an object.
+Lists enumerable and unenumerable own property keys and symbols of an object.
 
 > "fav" is an abbreviation of "favorite" and also the acronym of "for all versions".
 > This package is intended to support all Node.js versions and many browsers as possible.
@@ -24,15 +24,25 @@ For Node.js:
 
 ```js
 var listOwnProps = require('@fav/prop.list-own-props');
-listOwnProps({ a: 1, b: true, c: 'C' });
-// => [{ key: 'a', value: 1 }, { key: 'b', value: true }, { key: 'c', value: 'C' }]
+
+var symbol0 = Symbol('symbol-0');
+var symbol1 = Symbol('symbol-1');
+
+var obj = { a: 1 };
+obj[symbol0] = 2;
+listOwnProps(obj); // => [ 'a', Symbol(symbol-0) ]
+
+Object.defineProperty(obj, 'b', { value: 3 });
+Object.defineProperty(obj, symbol1, { value: 4 });
+listOwnProps(obj); // => [ 'a', 'b', Symbol(symbol-0), Symbol(symbol-1) ]
 
 function Fn() { this.a = 1; }
-Fn.prototype.b = true;
+Fn.prototype.b = 2;
+Fn.prototype[symbol0] = 3;
 var fn = new Fn();
-Object.defineProperty(fn, 'c', { value: 'C' });
-listOwnProps(fn);
-// => [{ key: 'a', value: 1 }, { key: 'c', value: 'C' }]
+Object.defineProperty(fn, 'c', { value: 4 });
+Object.defineProperty(fn, symbol1, { value: 5 });
+listOwnProps(fn); // => [ 'a', 'c', Symbol(symbol-1) ]
 ```
 
 For Web browsers:
@@ -41,8 +51,13 @@ For Web browsers:
 <script src="fav.prop.list-own-props.min.js"></script>
 <script>
 var listOwnProps = fav.prop.listOwnProps;
-listOwnProps({ a: 1, b: true, c: 'C' });
-// => [{ key:'a', value: 1 },  { key: 'b', value: true }, { key: 'c', value: 'C' }]
+
+var symbol0 = Symbol('symbol-0');
+var symbol1 = Symbol('symbol-1');
+
+var obj = { a: 1 };
+obj[symbol0] = 2;
+listOwnProps(obj); // => [ 'a', Symbol(symbol-0) ]
 </script>
 ```
 
@@ -51,9 +66,9 @@ listOwnProps({ a: 1, b: true, c: 'C' });
 
 ### <u>listOwnProps(obj) : Array</u>
 
-List enumerable and unenumerable own property content objects of the given object.
+List enumerable and unenumerable own property keys and symbols of the given object.
 
-A property content object is a plain object having `key` and `value` properties, and the values of `key`s are same with the members of `Object.getOwnPropertyNames` in strict mode except that this function returns an empty array when `obj` is nullish.
+This function returns an array of keys and symbols which are same with the concatenation of `Object.getOwnPropertyNames` and `Object.getOwnPropertySymbols` results in strict mode except that this function returns an empty array when `obj` is nullish.
 
 ***NOTE:*** *The result of `Object.getOwnPropertyNames` for a function in strict mode is different between before and after Node.js (io.js) v3.
 On v3 and later it doesn't contain the properties `arguments` and `caller`.
@@ -63,9 +78,9 @@ This function excludes `arguments` and `caller` properties even not in strict mo
 It contains the properties `arguments` and `caller`. 
 This function excludes `arguments` and `caller` properties even not in strict mode for same behaviors on other platforms.*
 
-***NOTE:*** *The result of `Object.getOwnPropertyNames` for a function on IE is different from results on other browsers and Node.js.
+***NOTE:*** *The results of `Object.getOwnPropertyNames` for a function on IE and a no name function on Edge are different from results on other browsers and Node.js.
 It does not contain `name` property.
-This function append `name` properties to the result on IE for same behaviors on target browsers and Node.js*
+This function appends `name` property to the result on IE or Edge for same behaviors on target browsers and Node.js*
 
 ***NOTE:*** *The value of `name` property of a no-name function is the first assigned variable's name on Node.js v6 or later, and that value is an empty string on the eariler.
 This function does no treatment about this differeneces.*
@@ -75,13 +90,13 @@ This function does no treatment about this differeneces.*
 
 #### Parameter:
 
-| Parameter |  Type  | Description                             |
-|-----------|:------:|-----------------------------------------|
-| *obj*     | object | The object to be listed its properties. |
+| Parameter |  Type  | Description                                            |
+|-----------|:------:|--------------------------------------------------------|
+| *obj*     | object | The object to be listed its property keys and symbols. |
 
 #### Return:
 
-An array of property content objects.
+An array of property keys and symbols.
 
 **Type:** Array
 
