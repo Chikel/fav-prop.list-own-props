@@ -1,6 +1,6 @@
 {
   "name": "@fav/prop.list-own-props",
-  "version": "0.3.0",
+  "version": "0.4.0",
   "description": "Lists own enumerable and unenumerable properties of an object.",
   "main": "index.js",
   "files": [
