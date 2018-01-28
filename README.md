@@ -66,7 +66,7 @@ listOwnProps(obj); // => [ 'a', Symbol(symbol-0) ]
 
 ### <u>listOwnProps(obj) : Array</u>
 
-List enumerable and unenumerable own property keys and symbols of the given object.
+Lists enumerable and unenumerable own property keys and symbols of the given object.
 
 This function returns an array of keys and symbols which are same with the concatenation of `Object.getOwnPropertyNames` and `Object.getOwnPropertySymbols` results in strict mode except that this function returns an empty array when `obj` is nullish.
 
@@ -102,13 +102,13 @@ An array of property keys and symbols.
 
 
 ## Checked                                                                      
-### Node.js (4〜8)
+### Node.js (4〜9)
 
-| Platform  |   4    |   5    |   6    |   7    |   8    |
-|:---------:|:------:|:------:|:------:|:------:|:------:|
-| macOS     |&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|
-| Windows10 |&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|
-| Linux     |&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|
+| Platform  |   4    |   5    |   6    |   7    |   8    |   9    |
+|:---------:|:------:|:------:|:------:|:------:|:------:|:------:|
+| macOS     |&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|
+| Windows10 |&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|
+| Linux     |&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|&#x25ef;|
 
 ### io.js (1〜3)
 
@@ -143,7 +143,7 @@ This program is free software under [MIT][mit-url] License.
 See the file LICENSE in this distribution for more details.
 
 [repo-url]: https://github.com/sttk/fav-prop.list-own-props/
-[npm-img]: https://img.shields.io/badge/npm-v0.4.0-blue.svg
+[npm-img]: https://img.shields.io/badge/npm-v1.0.0-blue.svg
 [npm-url]: https://www.npmjs.com/package/@fav/prop.list-own-props
 [mit-img]: https://img.shields.io/badge/license-MIT-green.svg
 [mit-url]: https://opensource.org/licenses/MIT
