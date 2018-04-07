@@ -43,12 +43,12 @@
   },
   "homepage": "https://github.com/sttk/fav-prop.list-own-props#readme",
   "dependencies": {
-    "@fav/prop.list-own-keys": "^1.0.0",
-    "@fav/prop.list-own-symbols": "^1.0.0"
+    "@fav/prop.list-own-keys": "^1.0.1",
+    "@fav/prop.list-own-symbols": "^1.0.1"
   },
   "devDependencies": {
-    "@xslet/platform": "^0.2.0",
-    "browserify": "^14.5.0",
+    "@xslet/platform": "^0.2.1",
+    "browserify": "^16.1.1",
     "chai": "^3.5.0",
     "coveralls": "^3.0.0",
     "eslint": "^4.11.0",
